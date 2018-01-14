@@ -42,6 +42,7 @@ if sys.version_info[0] >= 3:
 	url_unparse = urllib.parse.urlunparse
 	url_open = urllib.request.urlopen
 	HTTPError = urllib.error.HTTPError
+	Request = urllib.request.Request
 	import http.client
 	IncompleteRead = http.client.IncompleteRead
 else:
@@ -51,6 +52,7 @@ else:
 	url_unparse = urlparse.urlunparse
 	url_open = urllib2.urlopen
 	HTTPError = urllib2.HTTPError
+	Request = urllib2.Request
 	import httplib
 	IncompleteRead = httplib.IncompleteRead
 
@@ -367,7 +369,8 @@ class Deep(object):
 			try:
 				signal.alarm(int(math.ceil(maxtime)))
 				stime = time.time()
-				f = url_open(test_url)
+				f = url_open(Request(test_url,
+					headers={'Host': url_parts.hostname}))
 
 				md5 = hashlib.md5(f.read()).hexdigest()
 
@@ -418,7 +421,8 @@ class Deep(object):
 		try:
 			try:
 				signal.alarm(self._connect_timeout)
-				f = url_open(test_url)
+				f = url_open(Request(test_url,
+					headers={'Host': url_parts.hostname}))
 				early_out = True
 			finally:
 				signal.alarm(0)
